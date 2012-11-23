@@ -98,6 +98,10 @@ void KeyboardFunction(unsigned char key, int x, int y)
 		ColorFibers();
 		CreateDisplayLists();
 	}
+	if(key == 'q')
+	{
+		exit(1);
+	}
 	
 }
 

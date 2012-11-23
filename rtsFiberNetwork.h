@@ -190,14 +190,14 @@ class rtsFiberNetwork
 {
 private:
 	bool fiber_started;
-	int num_points;
+	unsigned int num_points;
 	float cull_value;	//used to cull fibers based on geometric error
 
 	vector<geometryPoint> getNetPointSamples(float subdiv)
 	{
 		vector<geometryPoint> result;
 
-		int f;
+		unsigned int f;
 		list<point3D<float>> fiberPoints;
 		list<point3D<float>>::iterator p;
 		for(f = 0; f<FiberList.size(); f++)
@@ -224,7 +224,7 @@ private:
 	{
 		//build the point arrays
 		ANNpointArray dataPts0 = annAllocPts(Samples->size(), 3);
-		for(int i=0; i<Samples->size(); i++)
+		for(unsigned int i=0; i<Samples->size(); i++)
 		{
 			dataPts0[i][0] = (*Samples)[i].p.x;
 			dataPts0[i][1] = (*Samples)[i].p.y;
@@ -244,7 +244,7 @@ private:
 		//PD.StartTimer(LOG_N_DIST_SEARCH0);
 		
 		//test each point in the network to the Samples list
-		int f, p;
+		unsigned int f, p;
 		int nodenum;
 		float gauss_dist;
 		for(f=0; f<network->FiberList.size(); f++)
@@ -258,7 +258,7 @@ private:
 			queryPt[1] = network->NodeList[nodenum].p.y;
 			queryPt[2] = network->NodeList[nodenum].p.z;
 			kdTree->annkSearch(queryPt, 1, nearestIdx, nearestDist);
-			gauss_dist = 1.0 - GaussianEnvelope(sqrt(nearestDist[0]), sigma);
+			gauss_dist = 1.0f - GaussianEnvelope(sqrtf((float)nearestDist[0]), sigma);
 			network->NodeList[nodenum].error = gauss_dist;
 
 			nodenum = network->FiberList[f].n1;
@@ -266,7 +266,7 @@ private:
 			queryPt[1] = network->NodeList[nodenum].p.y;
 			queryPt[2] = network->NodeList[nodenum].p.z;
 			kdTree->annkSearch(queryPt, 1, nearestIdx, nearestDist);
-			gauss_dist = 1.0 - GaussianEnvelope(sqrt(nearestDist[0]), sigma);
+			gauss_dist = 1.0f - GaussianEnvelope(sqrtf((float)nearestDist[0]), sigma);
 			network->NodeList[nodenum].error = gauss_dist;
 			
 			//compute the distance at each point along the fiber
@@ -276,7 +276,7 @@ private:
 				queryPt[1] = network->FiberList[f].pointList[p].y;
 				queryPt[2] = network->FiberList[f].pointList[p].z;
 				kdTree->annkSearch(queryPt, 1, nearestIdx, nearestDist);
-				gauss_dist = 1.0 - GaussianEnvelope(sqrt(nearestDist[0]), sigma);
+				gauss_dist = 1.0f - GaussianEnvelope(sqrtf((float)nearestDist[0]), sigma);
 				network->FiberList[f].errorList.push_back(gauss_dist);
 			}
 		}
@@ -389,7 +389,7 @@ private:
 		//At this point each vertex in the network has an error in the range of [0 1]
 		//This function computes the average error of each fiber and the entire network based
 		//on the error at each vertex.
-		int f, p;
+		unsigned int f, p;
 		float fiber_length;
 		float fiber_metric;
 		float total_metric = 0.0;
@@ -733,7 +733,7 @@ private:
 		Edge new_edge;
 		EdgeProperties ep;
 		EdgeSequence edge_sequence;
-		for(int f=0; f<network->FiberList.size(); f++)
+		for(unsigned int f=0; f<network->FiberList.size(); f++)
 		{
 			if(!network->isCulled(f))
 			{
@@ -755,7 +755,7 @@ private:
 		typedef property_map<TopologyGraph, vertex_position_t>::type PositionMap;
 		PositionMap positions = get(vertex_position_t(), g);
 
-		for(int v=0; v<network->NodeList.size(); v++)
+		for(unsigned int v=0; v<network->NodeList.size(); v++)
 			positions[v] = network->NodeList[v].p;
 
 		return g;
@@ -946,12 +946,9 @@ private:
 		//go through each vertex
 		graph_traits<TopologyGraph>::vertex_iterator vi, vtmp, vi_end;
 		tie(vi, vi_end) = vertices(G);
-		int color;
-		float max_weight;
 		pair<graph_traits<TopologyGraph>::edge_descriptor, bool> e_remove;
 		graph_traits<TopologyGraph>::adjacency_iterator ai, ai_end;
 		graph_traits<TopologyGraph>::vertex_descriptor v_remove;
-		int num_incident;
 		point3D<float> vp, ap;
 		vector3D<float> v_dist;
 		float dist;
@@ -1086,7 +1083,6 @@ private:
 		graph_traits<TopologyGraph>::edge_descriptor e_remove;
 		graph_traits<TopologyGraph>::in_edge_iterator ei, ei_end;
 		//graph_traits<TopologyGraph>::vertex_descriptor v_remove;
-		int num_incident;
 		bool vertex_removal;
 
 		//merge neighbors that are both invalid
@@ -1149,8 +1145,6 @@ private:
 		//go through each vertex
 		graph_traits<TopologyGraph>::vertex_iterator vi, vtmp, vi_end;
 		tie(vi, vi_end) = vertices(G);
-		int color;
-		float max_weight;
 		graph_traits<TopologyGraph>::edge_descriptor max_edge;
 		graph_traits<TopologyGraph>::in_edge_iterator ei, ei_end;
 		graph_traits<TopologyGraph>::vertex_descriptor v_next, v_this;
@@ -1190,7 +1184,6 @@ private:
 		graph_traits<TopologyGraph>::vertex_iterator vi, vtmp, vi_end;
 		tie(vi, vi_end) = vertices(G);
 		int color;
-		float max_weight;
 		pair<graph_traits<TopologyGraph>::edge_descriptor, bool> e_remove;
 		graph_traits<TopologyGraph>::adjacency_iterator ai, ai_end;
 		graph_traits<TopologyGraph>::vertex_descriptor v_remove;
@@ -1473,16 +1466,16 @@ private:
 	}
 	void refreshFiberLengths()
 	{
-		for(int f=0; f<FiberList.size(); f++)
-			FiberList[f].length = computeFiberLength(f);
+		for(unsigned int f=0; f<FiberList.size(); f++)
+			FiberList[f].length = (float)computeFiberLength(f);
 	}
 
 	void refreshIncidence()
 	{
-		for(int n=0; n<NodeList.size(); n++)
+		for(unsigned int n=0; n<NodeList.size(); n++)
 			NodeList[n].incident = 0;
 
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			NodeList[FiberList[f].n0].incident++;
 			NodeList[FiberList[f].n1].incident++;
@@ -1625,7 +1618,7 @@ public:
 		fiber_started = false;
 	}
 
-	void ConnectFiber(int node)
+	void ConnectFiber(unsigned int node)
 	{
 		if(!fiber_started)
 		{
@@ -1683,7 +1676,7 @@ public:
 		ANNidxArray nearestIdx = new ANNidx[1];
 		ANNdistArray nearestDist = new ANNdist[1];
 
-		for(int n=0; n<NodeList.size(); n++)
+		for(unsigned int n=0; n<NodeList.size(); n++)
 		{
 			queryPt[0] = NodeList[n].p.x;
 			queryPt[1] = NodeList[n].p.y;
@@ -1695,7 +1688,7 @@ public:
 		}
 
 		//set the nodes for each fiber to those mapped
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			FiberList[f].n0 = NodeMap[FiberList[f].n0];
 			FiberList[f].n1 = NodeMap[FiberList[f].n1];
@@ -1715,7 +1708,7 @@ public:
 
 		//run through each fiber
 		int node;
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			node = FiberList[f].n0;
 			//if this node has not been encountered
@@ -1911,7 +1904,7 @@ public:
 			fiber_new.n1 = pointList[vn];
 
 			//get all of the intermediate line vertices and insert them in the fiber
-			for(int i=1; i<line_verts-1; i++)
+			for(unsigned int i=1; i<line_verts-1; i++)
 			{
 				fiber_new.pointList.push_back(objFile.getVertex3d(objFile.getLineVertex(f, i)));
 				//fiber_new.pointList.push_back(objFile.get
@@ -1947,20 +1940,20 @@ public:
 		//output all vertices
 
 		//first output all nodes
-		for(int n=0; n<NodeList.size(); n++)
+		for(unsigned int n=0; n<NodeList.size(); n++)
 			outfile<<"v "<<NodeList[n].p.x<<" "<<NodeList[n].p.y<<" "<<NodeList[n].p.z<<endl;
 		//then output all fiber points
-		for(int f=0; f<FiberList.size(); f++)
-			for(int p=0; p<FiberList[f].pointList.size(); p++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
+			for(unsigned int p=0; p<FiberList[f].pointList.size(); p++)
 				outfile<<"v "<<FiberList[f].pointList[p].x<<" "<<FiberList[f].pointList[p].y<<" "<<FiberList[f].pointList[p].z<<endl;
 
 		//now output each of the fibers
 		int i = NodeList.size() + 1;
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			outfile<<"l ";
 			outfile<<FiberList[f].n0+1<<" ";
-			for(int p=0; p<FiberList[f].pointList.size(); p++)
+			for(unsigned int p=0; p<FiberList[f].pointList.size(); p++)
 			{
 				outfile<<i<<" ";
 				i++;
@@ -1986,13 +1979,13 @@ public:
 		float t;
 
 		//for each fiber
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			p0 = NodeList[FiberList[f].n0].p;
 			t=0.0;
 
 			num_points = FiberList[f].pointList.size();
-			for(int p = 0; p<num_points; p++)
+			for(unsigned int p = 0; p<num_points; p++)
 			{
 				p1 = FiberList[f].pointList[p];
 				dir = p0 - p1;
@@ -2012,7 +2005,7 @@ public:
 	void Crop(float px, float py, float pz, float sx, float sy, float sz)
 	{
 		vector<Fiber> newFiberList;
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			int n0 = FiberList[f].n0;
 			int n1 = FiberList[f].n1;
@@ -2036,7 +2029,7 @@ public:
 	{
 		vector<Fiber> newFiberList;
 		refreshFiberLengths();
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			if(FiberList[f].length > min_length && FiberList[f].length < max_length)
 			{
@@ -2053,7 +2046,7 @@ public:
 		vector<Fiber> newFiberList;
 		refreshIncidence();
 		refreshFiberLengths();
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			if(FiberList[f].length > min_length || (NodeList[FiberList[f].n0].incident > 1 && NodeList[FiberList[f].n1].incident > 1))
 			{
@@ -2071,7 +2064,7 @@ public:
 	{
 		list<point3D<float>> subdivided;
 		list<point3D<float>>::iterator p;
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			//get the subdivided fiber
 			subdivided.clear();
@@ -2092,11 +2085,11 @@ public:
 	{
 		point3D<float> p0, p1;
 		vector<point3D<float>> newPointList;
-		for(int f=0; f<FiberList.size(); f++)
+		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			newPointList.clear();
 			p0 = NodeList[FiberList[f].n0].p;
-			for(int p=0; p<FiberList[f].pointList.size(); p++)
+			for(unsigned int p=0; p<FiberList[f].pointList.size(); p++)
 			{
 				p1 = FiberList[f].pointList[p];
 				if( (p1 - p0).Length() >= spacing )
@@ -2219,14 +2212,14 @@ void rtsFiberNetwork::BD_ComputeL1Distance(vector<geometryPoint>* N0, vector<geo
 {
 	//build the point arrays
 	ANNpointArray dataPts0 = annAllocPts(N0->size(), 3);
-	for(int i=0; i<N0->size(); i++)
+	for(unsigned int i=0; i<N0->size(); i++)
 	{
 		dataPts0[i][0] = (*N0)[i].p.x;
 		dataPts0[i][1] = (*N0)[i].p.y;
 		dataPts0[i][2] = (*N0)[i].p.z;
 	}
 	ANNpointArray dataPts1 = annAllocPts(N1->size(), 3);
-	for(int i=0; i<N1->size(); i++)
+	for(unsigned int i=0; i<N1->size(); i++)
 	{
 		dataPts1[i][0] = (*N1)[i].p.x;
 		dataPts1[i][1] = (*N1)[i].p.y;
@@ -2242,25 +2235,25 @@ void rtsFiberNetwork::BD_ComputeL1Distance(vector<geometryPoint>* N0, vector<geo
 	//compare network 0 to network 1
 	//bdTree = new ANNkd_tree(dataPts0, N0->size(), 3);
 	bdTree = new ANNbd_tree(dataPts0, N0->size(), 3);
-	for(int i=0; i<N1->size(); i++)
+	for(unsigned int i=0; i<N1->size(); i++)
 	{
 		queryPt[0] = (*N1)[i].p.x;
 		queryPt[1] = (*N1)[i].p.y;
 		queryPt[2] = (*N1)[i].p.z;
 		bdTree->annkSearch(queryPt, 1, nearestIdx, nearestDist);
-		(*N1)[i].dist = sqrt(nearestDist[0]);
+		(*N1)[i].dist = sqrtf((float)nearestDist[0]);
 	}
 	delete bdTree;
 
 	//compare network 1 to network 0
 	bdTree = new ANNbd_tree(dataPts1, N1->size(), 3);
-	for(int i=0; i<N1->size(); i++)
+	for(unsigned int i=0; i<N1->size(); i++)
 	{
 		queryPt[0] = (*N0)[i].p.x;
 		queryPt[1] = (*N0)[i].p.y;
 		queryPt[2] = (*N0)[i].p.z;
 		bdTree->annkSearch(queryPt, 1, nearestIdx, nearestDist);
-		(*N0)[i].dist = sqrt(nearestDist[0]);
+		(*N0)[i].dist = sqrtf((float)nearestDist[0]);
 	}
 	delete bdTree;	
 	
@@ -2278,7 +2271,7 @@ void rtsFiberNetwork::topLabelNodes(vector<topologyNode>* N0, vector<topologyNod
 	unsigned int i0, i1;
 	vector3D<float> v;
 	float min_d;
-	float min_i;
+	unsigned int min_i;
 	for(i0=0; i0 < N0->size(); i0++)
 	{
 		v = (*N0)[i0].p - (*N1)[0].p;
@@ -2621,7 +2614,7 @@ void rtsFiberNetwork::ComputeBoundingVolume()
 	//find the bounding volume for the nodes
 	min_pos = NodeList[0].p;
 	max_pos = NodeList[0].p;
-	for(int n=0; n<NodeList.size(); n++)
+	for(unsigned int n=0; n<NodeList.size(); n++)
 	{
 		if(NodeList[n].p.x < min_pos.x)
 			min_pos.x = NodeList[n].p.x;
@@ -2639,9 +2632,9 @@ void rtsFiberNetwork::ComputeBoundingVolume()
 	}
 
 	//combine with the bounding volume for the fibers
-	for(int f=0; f<FiberList.size(); f++)
+	for(unsigned int f=0; f<FiberList.size(); f++)
 	{
-		for(int p=0; p<FiberList[f].pointList.size(); p++)
+		for(unsigned int p=0; p<FiberList[f].pointList.size(); p++)
 		{
 			if(FiberList[f].pointList[p].x < min_pos.x)
 				min_pos.x = FiberList[f].pointList[p].x;

@@ -254,7 +254,7 @@ void CenterCameraToSelected()
 
 	//iterate through the first edge sequence
 	EdgeSequence::iterator i;
-	int fiber, node;
+	int node;
 	point3D<float> test;
 	for(i=coreGraph[current_sequence].first.begin(); i!=coreGraph[current_sequence].first.end(); i++)
 	{
@@ -625,7 +625,7 @@ void CreateFiberPathLists(float fiber_radius, float node_radius)
 
 	if(coreGraph.size() > 0)
 	{
-		for(int i=0; i<sequenceColors.size(); i++)
+		for(unsigned int i=0; i<sequenceColors.size(); i++)
 		{
 			point3D<float> rgb = sequenceColors[i];
 			glColor3f(rgb.x, rgb.y, rgb.z);
@@ -639,7 +639,7 @@ void CreateFiberPathLists(float fiber_radius, float node_radius)
 
 	if(coreGraph.size() > 0)
 	{
-		for(int i=0; i<sequenceColors.size(); i++)
+		for(unsigned int i=0; i<sequenceColors.size(); i++)
 		{
 			point3D<float> rgb = sequenceColors[i];
 			glColor3f(rgb.x, rgb.y, rgb.z);

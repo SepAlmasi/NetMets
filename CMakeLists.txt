@@ -44,7 +44,6 @@ file(GLOB SRC_H "*.h")
 #set up copying data files
 configure_file(00_GT.obj ${CMAKE_CURRENT_BINARY_DIR}/00_GT.obj @ONLY)
 configure_file(00_T.obj ${CMAKE_CURRENT_BINARY_DIR}/00_T.obj @ONLY)
-configure_file(ANN.dll ${CMAKE_CURRENT_BINARY_DIR}/ANN.dll @ONLY)
 configure_file(SmoothShader_Vertex.glsl ${CMAKE_CURRENT_BINARY_DIR}/SmoothShader_Vertex.glsl @ONLY)
 configure_file(SmoothShader_Fragment.glsl ${CMAKE_CURRENT_BINARY_DIR}/SmoothShader_Fragment.glsl @ONLY)
 configure_file(ErrorMap_Fragment.glsl ${CMAKE_CURRENT_BINARY_DIR}/ErrorMap_Fragment.glsl @ONLY)
@@ -53,7 +52,7 @@ configure_file(ErrorMap_Fragment.glsl ${CMAKE_CURRENT_BINARY_DIR}/ErrorMap_Fragm
 add_executable(NetMets ${SRC_CPP} ${SRC_H})
 
 #set the link libraries
-target_link_libraries(NetMets ANN.lib ${ANN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${GLEW_LIBRARY})
+target_link_libraries(NetMets ${ANN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${GLEW_LIBRARY})
 
 
 
