@@ -3,9 +3,9 @@
 #include <algorithm>
 //#include "PerformanceData.h"
 #include "objJedi.h"
-#include "rtsPoint3D.h"
+#include "rtsPoint3d.h"
 #include "rtsFilename.h"
-#include <ann.h>
+#include <ANN/ANN.h>
 //#include <exception>
 
 #include <boost/graph/graph_traits.hpp>
@@ -33,11 +33,11 @@ struct vertex_position_t
 {
 	typedef vertex_property_tag kind;
 };
-typedef property<vertex_position_t, point3D<float>, property<vertex_color_t, int>> VertexProperties;
+typedef property<vertex_position_t, point3D<float>, property<vertex_color_t, int> > VertexProperties;
 typedef list<int> EdgeSequence;
 typedef pair<EdgeSequence, EdgeSequence> EdgeMapping;
 typedef vector<EdgeMapping> CoreGraphList;
-typedef property<edge_weight_t, float, property<edge_color_t, EdgeSequence>> EdgeProperties;
+typedef property<edge_weight_t, float, property<edge_color_t, EdgeSequence> > EdgeProperties;
 typedef adjacency_list<listS, vecS, undirectedS, VertexProperties, EdgeProperties> TopologyGraph;
 typedef graph_traits<TopologyGraph>::edge_descriptor TopologyEdge;
 typedef graph_traits<TopologyGraph>::vertex_descriptor TopologyVertex;
@@ -125,7 +125,7 @@ bool compare_edges(pair<TopologyEdge, float> e0, pair<TopologyEdge, float> e1)
 
 struct Fiber
 {
-	vector<point3D<float>> pointList;
+	vector<point3D<float> > pointList;
 	vector<float> errorList;
 	int n0;
 	int n1;
@@ -198,8 +198,8 @@ private:
 		vector<geometryPoint> result;
 
 		unsigned int f;
-		list<point3D<float>> fiberPoints;
-		list<point3D<float>>::iterator p;
+		list<point3D<float> > fiberPoints;
+		list<point3D<float> >::iterator p;
 		for(f = 0; f<FiberList.size(); f++)
 		{
 			fiberPoints.clear();
@@ -313,7 +313,7 @@ private:
 	}
 
 	void BD_ComputeL1Distance(vector<geometryPoint>* N0, vector<geometryPoint>* N1);
-	list<point3D<float>> SubdivideSegment(point3D<float> p0, point3D<float> p1, float spacing)
+	list<point3D<float> > SubdivideSegment(point3D<float> p0, point3D<float> p1, float spacing)
 	{
 
 		//find the direction of travel
@@ -324,7 +324,7 @@ private:
 		v.Normalize();
 
 		float l;
-		list<point3D<float>> result;
+		list<point3D<float> > result;
 		point3D<float> p;
 		for(l=0.0; l<length; l+=spacing)
 		{
@@ -336,10 +336,10 @@ private:
 
 	}
 
-	list<point3D<float>> SubdivideFiber(unsigned int f, float spacing)
+	list<point3D<float> > SubdivideFiber(unsigned int f, float spacing)
 	{
-		list<point3D<float>> result;
-		list<point3D<float>> segment;
+		list<point3D<float> > result;
+		list<point3D<float> > segment;
 
 		point3D<float> p0;
 		point3D<float> p1;
@@ -561,11 +561,11 @@ private:
 
 		return core;		
 	}
-	list<pair<TopologyVertex, EdgeSequence>> BOOST_FindNeighbors(TopologyGraph G, TopologyVertex node)
+	list<pair<TopologyVertex, EdgeSequence> > BOOST_FindNeighbors(TopologyGraph G, TopologyVertex node)
 	{
 		//Finds all colored vertices that can be reached from "node"
 		pair<TopologyVertex, EdgeSequence> edge_map;
-		list<pair<TopologyVertex, EdgeSequence>> result;
+		list<pair<TopologyVertex, EdgeSequence> > result;
 
 		do{
 			global_Predecessors.clear();
@@ -605,8 +605,8 @@ private:
 		}
 
 		//for each vertex in the graph, find all of the neighbors
-		list<pair<TopologyVertex, EdgeSequence>> neighborhood;
-		list<pair<TopologyVertex, EdgeSequence>>::iterator ni;
+		list<pair<TopologyVertex, EdgeSequence> > neighborhood;
+		list<pair<TopologyVertex, EdgeSequence> >::iterator ni;
 		list<float>::iterator wi;
 		pair<TopologyEdge, bool> e;
 		for(tie(vi, vi_end) = vertices(G); vi!=vi_end; vi++)
@@ -930,7 +930,7 @@ private:
 
 
 	}
-	void rtsFiberNetwork::BOOST_CleanGraph(TopologyGraph& G, float sigma)
+	void BOOST_CleanGraph(TopologyGraph& G, float sigma)
 	{
 		//This function cleans up degenerate cases in the ground truth and warns the user about them
 		//These include:
@@ -2062,8 +2062,8 @@ public:
 	//subdivision
 	void SubdivideNetwork(float spacing)
 	{
-		list<point3D<float>> subdivided;
-		list<point3D<float>>::iterator p;
+		list<point3D<float> > subdivided;
+		list<point3D<float> >::iterator p;
 		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			//get the subdivided fiber
@@ -2084,7 +2084,7 @@ public:
 	void Resample(float spacing)
 	{
 		point3D<float> p0, p1;
-		vector<point3D<float>> newPointList;
+		vector<point3D<float> > newPointList;
 		for(unsigned int f=0; f<FiberList.size(); f++)
 		{
 			newPointList.clear();

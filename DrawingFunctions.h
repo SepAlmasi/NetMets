@@ -1,6 +1,6 @@
 #include "rtsFiberNetwork.h"
 #include "rts_glShaderProgram.h"
-#include "gl/glut.h"
+#include "GL/glut.h"
 #include "rts_glutRenderWindow.h"
 #include <time.h>
 
@@ -10,7 +10,7 @@ extern rtsFiberNetwork* testNetwork;
 extern float sigmaG, sigmaC;
 float network_span;
 CoreGraphList coreGraph;
-vector<point3D<float>> sequenceColors; 
+vector<point3D<float> > sequenceColors; 
 int current_sequence = 0;
 
 //shader variables

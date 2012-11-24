@@ -1,4 +1,4 @@
-#include <rtsPoint3D.h>
+#include <rtsPoint3d.h>
 #include <vector>
 #include <string>
 //#include <Windows.h>
@@ -123,10 +123,10 @@ void ComputeNetMets()
 
 }
 
-#include <direct.h>
+//#include <direct.h>
    #include <stdio.h>
    #include <errno.h>
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 	/*char pBuf[2048];
 	GetModuleFileNameA(NULL, pBuf, 2048);
@@ -146,34 +146,7 @@ void main(int argc, char* argv[])
 	float epsilon = 0.1;
 	if(argc < 3)
 	{
-		//cout<<"Specify gold standard and test file."<<endl;
-		//gold_filename = "..\\..\\..\\data\\SWC\\v_e_purk1.swc";
-		//gold_filename = "..\\..\\..\\data\\SWC\\cell_h.swc";
-		//gold_filename = "..\\..\\..\\data\\SWC\\pv08b.swc";
-		//gold_filename = "..\\..\\..\\data\\SWC\\GT_Experiment.obj";
-
-		//test_filename = "..\\..\\..\\data\\SWC\\v_e_purk1 - Copy.swc";
-		//test_filename = "..\\..\\..\\data\\SWC\\cell_h - Copy.swc";
-		//test_filename = "..\\..\\..\\data\\SWC\\pv08b - Copy.swc";
-		//test_filename = "..\\..\\..\\data\\SWC\\T_Experiment.obj";
-		
-		//test_filename = "..\\..\\..\\data\\SWC\\pv08b.swc";
-
-		//gold_filename = "..\\..\\..\\data\\SWC\\pv08b.swc"; test_filename = "..\\..\\..\\data\\SWC\\pv08b - Copy.swc"; standard_deviation = 4.05;
-		//gold_filename = "01_GT.obj";	test_filename = "01_T.obj"; sigmaG = 15.0; sigmaC = 45;
-		//gold_filename = "purkinje.swc"; test_filename = "purkinje_test.swc"; sigmaG = sigmaC = 2.05;
 		gold_filename = "00_GT.obj"; test_filename = "00_T.obj"; sigmaG = sigmaC = 25.0;
-		//gold_filename = "02_GT.obj"; test_filename = "02_T.obj"; standard_deviation = 25.0;
-		//gold_filename = "03_GT.obj"; test_filename = "03_T.obj"; standard_deviation = 25.0;
-		//gold_filename = "molecule_GT.obj"; test_filename = "molecule_T.obj"; sigmaG = 10.0; sigmaC=35.0;
-		//gold_filename = "X_T.obj"; test_filename = "X_GT.obj"; sigmaG = 15.0; sigmaC=25.0;
-		//gold_filename = "..\\..\\..\\data\\vessel_analysis\\cortex_smooth.obj"; test_filename = "..\\..\\..\\data\\vessel_analysis\\cortex_smooth.obj"; sigmaG = sigmaC = 3.0;
-		//gold_filename = "..\\..\\..\\data\\Diadem\\OP_1.swc"; test_filename = "..\\..\\..\\data\\Diadem\\OP_1_test.swc"; standard_deviation = 5.0;
-		//gold_filename = "..\\..\\..\\data\\Diadem\\CF_1.swc"; test_filename = "..\\..\\..\\data\\Diadem\\CF_1_test.swc"; sigmaG = 15.0; sigmaC = 45;
-		//gold_filename = "GroundTruth.swc"; test_filename = "GroundTruthCopy.swc"; sigmaG = sigmaC = 25.0;
-		
-		//gold_filename = "C:\\Users\\david\\Documents\\My Dropbox\\Projects\\0600NetworkComparison\\Release\\Vascular_Subgraph.swc"; 
-		//test_filename = "C:\\Users\\david\\Documents\\My Dropbox\\Projects\\0600NetworkComparison\\Release\\Vascular_Thinned.obj"; 
 		sigmaG = 25; sigmaC = 25.0;
 
 	}
@@ -186,7 +159,6 @@ void main(int argc, char* argv[])
 		cout<<"Please enter a sigma value: ";
 		cin>>sigmaG;
 		sigmaC = sigmaG;
-		//InitializeDataFromResolution(gold_filename, test_filename, resolution);
 	}
 	else if(argc == 4)
 	{
@@ -195,9 +167,8 @@ void main(int argc, char* argv[])
 		test_filename = argv[2];
 		cout<<"Test: "<<test_filename<<endl;
 		sigmaG = sigmaC = atof(argv[3]);
-		//InitializeDataFromSTD(gold_filename, test_filename, standard_deviation);
 	}
-
+	
 	//load the network files
 	testNetwork = new rtsFiberNetwork();
 	testNetwork->LoadFile(test_filename);
@@ -211,6 +182,7 @@ void main(int argc, char* argv[])
 	//GLUT stuff
 	//menus
 	rts_glutInitialize("Network Comparison", 1000, 500);
+	
 	int mnuMain = glutCreateMenu(GlutMenuCallback);
 	int mnuColormap = glutCreateMenu(GlutMenuCallback);
 
@@ -226,7 +198,6 @@ void main(int argc, char* argv[])
 	glutAddMenuEntry("Isoluminant", COLORMAP_ISOLUMINANT);
 	glutAddMenuEntry("Black Body", COLORMAP_BLACKBODY);
 	glutAddMenuEntry("Brewer", COLORMAP_BREWER);
-	//glutAddMenuEntry("Polar CIELab", COLORMAP_POLAR_CIELAB);
 	glutAddMenuEntry("Rainbow", COLORMAP_RAINBOW);
 
 	glutSetMenu(mnuMain);
@@ -238,7 +209,7 @@ void main(int argc, char* argv[])
 	//keyboard stuff
 	glutSpecialFunc(SpecialKeys);
 	glutKeyboardFunc(KeyboardFunction);
-
+	
 	//camera
 	point3D<float> min_point0 = goldNetwork->min_pos;
 	point3D<float> min_point1 = testNetwork->min_pos;
@@ -309,26 +280,11 @@ void main(int argc, char* argv[])
 
 	rts_glutStart(MyDisplayFunction);
 
-	/*//Boost graph test
-	typedef adjacency_list<vecS, vecS, bidirectionalS> Graph;
-	enum { A, B, C, D, E, N };
-	const int num_vertices = N;
-	const char* name = "ABCDE";
-	typedef std::pair<int, int> Edge;
-	Edge edge_array[] = {Edge(A, B), Edge(A, D), Edge(C, A), Edge(D, C), Edge(C, E), Edge(B, D), Edge(D, E) };
-	const int num_edges = sizeof(edge_array)/sizeof(edge_array[0]);
-
-	Graph g(num_vertices);
-
-	for(int i=0; i<num_edges; i++)
-		add_edge(edge_array[i].first, edge_array[i].second, g);
-
-	remove_edge(A, B, g);
-	*/
 
 	cout<<"Press <Enter> to Exit..."<<endl;
 	cin.get();
 	cin.get();
 
+	return 1;
 	
 }

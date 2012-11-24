@@ -17,7 +17,7 @@ find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
 
 #find BOOST
-find_package(BOOST REQUIRED)
+find_package(Boost REQUIRED)
 
 #find the Approximate Nearest Neighbor Library
 find_package(ANN REQUIRED)
@@ -34,7 +34,7 @@ include_directories(
 	${GLUT_INCLUDE_DIR}
 	${RTS_INCLUDE_DIR}
 	${ANN_INCLUDE_DIR}
-	${BOOST_INCLUDE_DIR}
+	${Boost_INCLUDE_DIR}
 )
 
 #Assign source files to the appropriate variables
@@ -52,7 +52,7 @@ configure_file(ErrorMap_Fragment.glsl ${CMAKE_CURRENT_BINARY_DIR}/ErrorMap_Fragm
 add_executable(NetMets ${SRC_CPP} ${SRC_H})
 
 #set the link libraries
-target_link_libraries(NetMets ${ANN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${GLEW_LIBRARY})
+target_link_libraries(NetMets ${ANN_LIBRARY} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${GLEW_LIBRARY} ${GLUT_glut_LIBRARY})
 
 
 
