@@ -102,12 +102,12 @@ void KeyboardFunction(unsigned char key, int x, int y)
 	{
 		exit(1);
 	}
-	
+
 }
 
 void ComputeNetMets()
 {
-	
+
 	testNetwork->Resample(sigmaG);
 	testNetwork->SubdivideNetwork(sigmaG);
 
@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
 		cout<<"Test: "<<test_filename<<endl;
 		sigmaG = sigmaC = atof(argv[3]);
 	}
-	
+
 	//load the network files
 	testNetwork = new rtsFiberNetwork();
 	testNetwork->LoadFile(test_filename);
@@ -176,13 +176,13 @@ int main(int argc, char* argv[])
 	goldNetwork = new rtsFiberNetwork();
 	goldNetwork->LoadFile(gold_filename);
 
-	
 
-	
+
+
 	//GLUT stuff
 	//menus
 	rts_glutInitialize("Network Comparison", 1000, 500);
-	
+
 	int mnuMain = glutCreateMenu(GlutMenuCallback);
 	int mnuColormap = glutCreateMenu(GlutMenuCallback);
 
@@ -209,7 +209,7 @@ int main(int argc, char* argv[])
 	//keyboard stuff
 	glutSpecialFunc(SpecialKeys);
 	glutKeyboardFunc(KeyboardFunction);
-	
+
 	//camera
 	point3D<float> min_point0 = goldNetwork->min_pos;
 	point3D<float> min_point1 = testNetwork->min_pos;
@@ -286,5 +286,5 @@ int main(int argc, char* argv[])
 	cin.get();
 
 	return 1;
-	
+
 }
