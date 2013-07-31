@@ -258,7 +258,10 @@ int main(int argc, char* argv[])
 
     //display the help
     if( opt->getFlag( "help" ) || opt->getFlag( 'h' ) )
+    {
                 opt->printUsage();
+                return 0;
+    }
 
     //set a flag to display the GUI if requested
     if( opt->getFlag( "gui" ) || opt->getFlag( 'g' ) )
