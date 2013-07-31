@@ -1,7 +1,10 @@
 #include <rtsPoint3d.h>
 #include <vector>
 #include <string>
-//#include <Windows.h>
+
+//AnyOption library for parsing command-line options:
+//http://www.hackorama.com/anyoption/
+#include "anyoption.h"
 
 //#include "ImplicitCalculations.h"
 #include "objJedi.h"
@@ -13,6 +16,9 @@
 
 
 using namespace std;
+
+bool displayGui = false;
+bool displayVerbose = false;
 
 rtsFiberNetwork* goldNetwork;
 GLint goldNodeDL;
@@ -28,6 +34,7 @@ void GlutMenuCallback(int option);
 
 void LoadNetworks(string gold_filename, string test_filename)
 {
+
 	goldNetwork = new rtsFiberNetwork();
 	testNetwork = new rtsFiberNetwork();
 
@@ -53,18 +60,10 @@ void LoadNetworks(string gold_filename, string test_filename)
 
 void SpecialKeys(int key, int x, int y)
 {
-	//rtsQuaternion<float> new_rotation;
-
-	//if(key == GLUT_KEY_UP)
-		//rts_glut_camera.OrbitFocus(0, d_angle);
-	//if(key == GLUT_KEY_DOWN)
-		//rts_glut_camera.OrbitFocus(0, -d_angle);
 	if(key == GLUT_KEY_LEFT)
 		IncrementSelectedFiber(-1);
-		//rts_glut_camera.OrbitFocus(d_angle, 0.0);
 	if(key == GLUT_KEY_RIGHT)
 		IncrementSelectedFiber(1);
-		//rts_glut_camera.OrbitFocus(-d_angle, 0.0);
 }
 
 void PrintHelp()
@@ -105,81 +104,9 @@ void KeyboardFunction(unsigned char key, int x, int y)
 
 }
 
-void ComputeNetMets()
+void InitializeOpenGL()
 {
-
-	testNetwork->Resample(sigmaG);
-	testNetwork->SubdivideNetwork(sigmaG);
-
-	goldNetwork->Resample(sigmaG);
-	goldNetwork->SubdivideNetwork(sigmaG);
-
-
-	//compare the two networks and get the core graph
-	coreGraph = goldNetwork->CompareNetworks(testNetwork, sigmaG, sigmaC);
-
-	//color each of the core graph fiber sequences
-	ColorFibers();
-
-}
-
-//#include <direct.h>
-   #include <stdio.h>
-   #include <errno.h>
-int main(int argc, char* argv[])
-{
-	/*char pBuf[2048];
-	GetModuleFileNameA(NULL, pBuf, 2048);
-	string buffer = pBuf;
-	rtsFilename filename = buffer;
-	string ExecutableDirectory = filename.getDirectory();
-	ExecutableDirectory+="\\";*/
-
-
-
-
-	string gold_filename;
-	string test_filename;
-	sigmaG = 25;
-	sigmaC = 25;
-	int resolution = 512;
-	float epsilon = 0.1;
-	if(argc < 3)
-	{
-		gold_filename = "00_GT.obj"; test_filename = "00_T.obj"; sigmaG = sigmaC = 25.0;
-		sigmaG = 25; sigmaC = 25.0;
-
-	}
-	else if(argc == 3)
-	{
-		gold_filename = argv[1];
-		cout<<"Gold: "<<gold_filename<<endl;
-		test_filename = argv[2];
-		cout<<"Test: "<<test_filename<<endl;
-		cout<<"Please enter a sigma value: ";
-		cin>>sigmaG;
-		sigmaC = sigmaG;
-	}
-	else if(argc == 4)
-	{
-		gold_filename = argv[1];
-		cout<<"Gold: "<<gold_filename<<endl;
-		test_filename = argv[2];
-		cout<<"Test: "<<test_filename<<endl;
-		sigmaG = sigmaC = atof(argv[3]);
-	}
-
-	//load the network files
-	testNetwork = new rtsFiberNetwork();
-	testNetwork->LoadFile(test_filename);
-
-	goldNetwork = new rtsFiberNetwork();
-	goldNetwork->LoadFile(gold_filename);
-
-
-
-
-	//GLUT stuff
+    //GLUT stuff
 	//menus
 	rts_glutInitialize("Network Comparison", 1000, 500);
 
@@ -224,6 +151,7 @@ int main(int argc, char* argv[])
 	rts_glut_camera.setPosition(0, 0, 3*network_span);
 	rts_glut_camera.LookAt(center_point, vector3D<float>(0.0, 1.0, 0.0));
 
+
 	//load the shaders
 	makeColormap();
 	//create strings for all of the shader filenames
@@ -236,19 +164,23 @@ int main(int argc, char* argv[])
 
 	//Edge_ErrorShader.Init();
 	//ErrorShader.Clean();
+
 	Edge_ErrorShader.AttachShader(GL_VERTEX_SHADER, SmoothShaderVertexFilename.c_str());
+
 	//Edge_ErrorShader.AttachShader(GL_FRAGMENT_SHADER, "ErrorShader_Fragment.glsl");
 	Edge_ErrorShader.AttachShader(GL_FRAGMENT_SHADER, ErrorMapFragmentFilename.c_str());
 	Edge_ErrorShader.Compile();
+
 	//cout<<"Edge Error Shader Log-------------------------"<<endl;
 	Edge_ErrorShader.PrintLog();
 	Edge_ErrorShader.Link();
 	Edge_ErrorShader.PrintLog();
 	//Edge_ErrorShader.PrintUniforms();
-	Edge_ErrorShader.AttachGlobalUniform("L0_pos", L0_pos);
+	//Edge_ErrorShader.AttachGlobalUniform("L0_pos", L0_pos);
 	Edge_ErrorShader.AttachGlobalUniform("L1_pos", L1_pos);
 	Edge_ErrorShader.AttachTextureMap("colorMap", texColorMap);
 	//Edge_ErrorShader.UpdateGlobalUniforms();
+
 
 	Node_ErrorShader.AttachShader(GL_VERTEX_SHADER, SmoothShaderVertexFilename.c_str());
 	Node_ErrorShader.AttachShader(GL_FRAGMENT_SHADER, ErrorMapFragmentFilename.c_str());
@@ -257,7 +189,7 @@ int main(int argc, char* argv[])
 	Node_ErrorShader.PrintLog();
 	Node_ErrorShader.Link();
 	Node_ErrorShader.PrintLog();
-	Node_ErrorShader.AttachGlobalUniform("L0_pos", L0_pos);
+	//Node_ErrorShader.AttachGlobalUniform("L0_pos", L0_pos);
 	Node_ErrorShader.AttachGlobalUniform("L1_pos", L1_pos);
 	Node_ErrorShader.AttachTextureMap("colorMap", texColorMap);
 
@@ -271,20 +203,164 @@ int main(int argc, char* argv[])
 	Smooth_Shader.AttachGlobalUniform("L0_pos", L0_pos);
 	Smooth_Shader.AttachGlobalUniform("L1_pos", L1_pos);
 
+}
+
+void ComputeNetMets()
+{
+
+	testNetwork->Resample(sigmaG);
+	testNetwork->SubdivideNetwork(sigmaG);
+
+	goldNetwork->Resample(sigmaG);
+	goldNetwork->SubdivideNetwork(sigmaG);
+
+
+	//compare the two networks and get the core graph
+	float gFPR, gFNR, cFPR, cFNR;
+	coreGraph = goldNetwork->CompareNetworks(testNetwork, sigmaG, sigmaC, gFPR, gFNR, cFPR, cFNR);
+
+	//output error metrics
+	if(displayVerbose)
+	{
+        cout<<"GEOMETRY++++++++++++"<<endl;
+        cout<<"False Positive Rate: "<<gFPR<<endl;
+        cout<<"False Negative Rate: "<<gFNR<<endl;
+        cout<<"CONNECTIVITY++++++++"<<endl;
+        cout<<"False Positive Rate: "<<cFPR<<endl;
+        cout<<"False Negative Rate: "<<cFNR<<endl;
+    }
+    else
+    {
+        cout<<gFPR<<'\t'<<gFNR<<'\t'<<cFPR<<'\t'<<cFNR<<endl;
+    }
+
+	//color each of the core graph fiber sequences
+	ColorFibers();
+
+}
+
+#include <stdio.h>
+#include <errno.h>
+int main(int argc, char* argv[])
+{
+    char* test = "Hello world!/n";
+    strlen(test);
+
+    //Create an AnyOption object
+    AnyOption* opt = new AnyOption();
+    opt->addUsage( "" );
+    opt->addUsage( "Usage: NetMets [OPTION]... [GROUND TRUTH FILE] [TEST CASE FILE]" );
+    opt->addUsage( "" );
+    opt->addUsage( " -h  --help         Prints this help " );
+    opt->addUsage( " -s  --sigma        Input sigma value (default = 25)");
+    opt->addUsage( " -g  --gui          Display NetMets GUI " );
+    opt->addUsage( " -v  --verbose      Verbose output " );
+    opt->addUsage( "" );
+
+    opt->setFlag(  "help", 'h' );   /* a flag (takes no argument), supporting long and short form */
+    opt->setFlag(  "gui", 'g' );
+    opt->setOption("sigma", 's');
+    opt->setFlag( "verbose", 'v');
+
+    /* go through the command line and get the options  */
+    opt->processCommandArgs( argc, argv );
+
+    //display the help
+    if( opt->getFlag( "help" ) || opt->getFlag( 'h' ) )
+                opt->printUsage();
+
+    //set a flag to display the GUI if requested
+    if( opt->getFlag( "gui" ) || opt->getFlag( 'g' ) )
+                displayGui = true;
+    if( opt->getFlag("verbose") || opt->getFlag('v'))
+                displayVerbose = true;
+
+    //set the sigma value based on user input
+    sigmaG = 25;
+	sigmaC = 25;
+
+	if( opt->getValue( 's' ) != NULL  || opt->getValue( "sigma" ) != NULL  )
+	{
+        sigmaG = atof(opt->getValue("sigma"));
+        sigmaC = sigmaG;
+
+    }
+        	//cout << "size = " << atof(opt->getValue("sigma")) << endl ;
+
+    //get the filename arguments
+    int nArgs = opt->getArgc();
+    char** sArgs = (char**)malloc(nArgs);
+    for(int a=0; a<nArgs; a++)
+        sArgs[a] = opt->getArgv(a);
+
+
+	string gold_filename;
+	string test_filename;
+
+	int resolution = 512;
+	float epsilon = 0.1;
+	if(nArgs < 2)
+	{
+		gold_filename = "00_GT.obj"; test_filename = "00_T.obj"; sigmaG = sigmaC = 25.0;
+		//sigmaG = 25; sigmaC = 25.0;
+
+	}
+	else
+	{
+        gold_filename = sArgs[0];
+		//cout<<"Gold: "<<gold_filename<<endl;
+		test_filename = sArgs[1];
+		//cout<<"Test: "<<test_filename<<endl;
+	}
+	/*else if(nArgs == 3)
+	{
+		gold_filename = sArgs[1];
+		cout<<"Gold: "<<gold_filename<<endl;
+		test_filename = sArgs[2];
+		cout<<"Test: "<<test_filename<<endl;
+		cout<<"Please enter a sigma value: ";
+		cin>>sigmaG;
+		sigmaC = sigmaG;
+	}
+	else if(nArgs == 4)
+	{
+		gold_filename = sArgs[1];
+		cout<<"Gold: "<<gold_filename<<endl;
+		test_filename = sArgs[2];
+		cout<<"Test: "<<test_filename<<endl;
+		sigmaG = sigmaC = atof(sArgs[3]);
+	}*/
+
+	//load the network files
+	testNetwork = new rtsFiberNetwork();
+	testNetwork->LoadFile(test_filename);
+
+	goldNetwork = new rtsFiberNetwork();
+	goldNetwork->LoadFile(gold_filename);
+
+
+
+
+
+
 	//compute the metric
 	ComputeNetMets();
 
+
+
+	//if the user does not want the GUI displayed, just return
+    if(!displayGui) return 0;
+
+    //initialize OpenGL
+	InitializeOpenGL();
+
+    //create display lists
 	CreateDisplayLists();
 
 
-
+    //set up GLUT and start
 	rts_glutStart(MyDisplayFunction);
 
-
-	cout<<"Press <Enter> to Exit..."<<endl;
-	cin.get();
-	cin.get();
-
-	return 1;
+	return 0;
 
 }

@@ -50,7 +50,7 @@ list<TopologyEdge> global_EdgeDescriptorSequence;
 vector<TopologyVertex> global_Predecessors;
 TopologyVertex global_Source;
 pair<TopologyEdge, bool> BOOST_SmallestEdge(int v0, int v1, const TopologyGraph& G)
-{		
+{
 	pair<TopologyEdge, bool> edge_pair = edge(v0, v1, G);
 	//if the edge doesn't exist, return the false pair
 	if(!edge_pair.second)
@@ -63,7 +63,7 @@ pair<TopologyEdge, bool> BOOST_SmallestEdge(int v0, int v1, const TopologyGraph&
 	graph_traits<TopologyGraph>::out_edge_iterator oi, oi_end;
 	TopologyEdge min_e = edge_pair.first;
 	float min_weight = get(edge_weight_t(), G, min_e);
-	
+
 	for(tie(oi, oi_end) = out_edges(v0, G); oi!=oi_end; oi++)
 	{
 		if(target(*oi, G) == v1)
@@ -242,7 +242,7 @@ private:
 		kdTree = new ANNkd_tree(dataPts0, Samples->size(), 3);
 		//PD.EndTimer(LOG_N_DIST_BUILD0);
 		//PD.StartTimer(LOG_N_DIST_SEARCH0);
-		
+
 		//test each point in the network to the Samples list
 		unsigned int f, p;
 		int nodenum;
@@ -268,7 +268,7 @@ private:
 			kdTree->annkSearch(queryPt, 1, nearestIdx, nearestDist);
 			gauss_dist = 1.0f - GaussianEnvelope(sqrtf((float)nearestDist[0]), sigma);
 			network->NodeList[nodenum].error = gauss_dist;
-			
+
 			//compute the distance at each point along the fiber
 			for(p=0; p<network->FiberList[f].pointList.size(); p++)
 			{
@@ -306,7 +306,7 @@ private:
 			(*N0)[i].dist = sqrt(nearestDist[0]);
 		}
 		PD.EndTimer(LOG_N_DIST_SEARCH1);
-		//delete kdTree;	
+		//delete kdTree;
 		*/
 		annClose();
 		//delete kdTree;
@@ -421,7 +421,7 @@ private:
 				//shift
 				p0 = p1;
 				e0 = e1;
-				
+
 			}
 
 			//end at the last fiber node
@@ -524,18 +524,18 @@ private:
 
 		//merge invalid vertices together
 		//this function also merges invalid vertices with valid vertices if their degree = 2
-		
+
 		//BOOST_PrintGraph(T);
 		BOOST_MergeInvalidVertices(GT);
 		BOOST_MergeInvalidVertices(T);
 		//BOOST_PrintGraph(T);
-		
+
 		//merge the compatible vertices
 		int compatible_spines = BOOST_MergeCompatibleVertices(T);
 		cout<<"Compatibility errors in T: "<<compatible_spines<<endl;
 		false_positives += compatible_spines;
 
-		
+
 		CoreGraphList core = BOOST_FindCore(GT, T);
 
 		//BOOST_PrintGraph(GT);
@@ -547,9 +547,9 @@ private:
 
 		//core = BOOST_FindCore(GT, T);
 
-		
-	
-		
+
+
+
 		int T_topology_errors = num_edges(T) - core.size();
 		int GT_topology_errors = num_edges(T) - core.size();
 
@@ -559,7 +559,7 @@ private:
 		cout<<"False Positive Edges: "<<false_positives<<endl;
 		cout<<"False Negative Edges: "<<false_negatives<<endl;
 
-		return core;		
+		return core;
 	}
 	list<pair<TopologyVertex, EdgeSequence> > BOOST_FindNeighbors(TopologyGraph G, TopologyVertex node)
 	{
@@ -766,7 +766,7 @@ private:
 		int verts = num_vertices(compareTo);
 		//allocate enough space in an ANN array
 		ANNpointArray dataPts = annAllocPts(verts, 3);
-		
+
 		//get the vertex positions
 		typedef property_map<TopologyGraph, vertex_position_t>::type PositionMap;
 		PositionMap positions = get(vertex_position_t(), compareTo);
@@ -853,7 +853,7 @@ private:
 		int verts = num_vertices(T);
 		//allocate enough space in an ANN array
 		ANNpointArray dataPts = annAllocPts(verts, 3);
-		
+
 		//get the vertex positions
 		typedef property_map<TopologyGraph, vertex_position_t>::type PositionMap;
 		PositionMap positions = get(vertex_position_t(), T);
@@ -956,7 +956,7 @@ private:
 		{
 			//get the color of the vertex
 			vp = get(vertex_position_t(), G, *vi);
-			
+
 			//check every adjacent vertex
 			vertex_error = false;
 			for(tie(ai, ai_end) = adjacent_vertices(*vi, G); ai != ai_end; ai++)
@@ -979,7 +979,7 @@ private:
 			{
 				//merge the vertices along edge "e_remove"
 				BOOST_MergeVertices(G, e_remove.first, v_remove);
-				
+
 				//refresh the vertex iterator
 				tie(vtmp, vi_end) = vertices(G);
 			}
@@ -1000,7 +1000,7 @@ private:
 			if(get(vertex_color_t(), G, *vi) >= 0)
 			{
 				index = get(vertex_index_t(), G, *vi);
-				put(vertex_color_t(), G, *vi, index);		
+				put(vertex_color_t(), G, *vi, index);
 			}
 		}
 	}
@@ -1023,7 +1023,7 @@ private:
 			to->NodeList[idx].color = colors[*vp.first];
 		}
 		//cout << index[*vp.first] <<":"<<colors[*vp.first]<<"("<<compatibility[*vp.first]<<")= "<<positions[*vp.first]<<endl;
-		
+
 	}
 	void BOOST_MergeVertices(TopologyGraph& G, graph_traits<TopologyGraph>::edge_descriptor e, graph_traits<TopologyGraph>::vertex_descriptor v)
 	{
@@ -1122,7 +1122,7 @@ private:
 
 			}
 
-		}	
+		}
 
 		//merge a vertex with its neighbor if it is invalid and degree=2
 		for(tie(vi, vi_end) = vertices(G); vi!=vi_end; vi++)
@@ -1173,7 +1173,7 @@ private:
 			}
 		}
 
-		
+
 		return merged_spines;
 	}
 	int BOOST_MergeCompatibleVertices(TopologyGraph& G)
@@ -1220,10 +1220,10 @@ private:
 			else
 				vi++;
 		}
-		
+
 		return merged_edges;
 	}
-	
+
 	EdgeSequence BOOST_RemoveEdge(int v0, int v1, TopologyGraph& G)
 	{
 		//look for a direct edge
@@ -1239,7 +1239,7 @@ private:
 			remove_edge(e0.first, G);
 		}
 		//otherwise look for an indirect edge
-		
+
 		else
 		{
 			graph_traits<TopologyGraph>::adjacency_iterator ai, ai_end;
@@ -1330,7 +1330,7 @@ private:
 				//mark the edge for removal from T
 				to_remove.push_back(*ei);
 
-			}			
+			}
 		}
 		for(remove_iter = to_remove.begin(); remove_iter != to_remove.end(); remove_iter++)
 			remove_edge(*remove_iter, T);
@@ -1381,7 +1381,7 @@ private:
 						remove_edge(e.first, T);
 						remove_edge(*ei, T);
 						break;
-					}	
+					}
 				}
 			}
 			if(!match_found)
@@ -1392,7 +1392,7 @@ private:
 		}
 
 		cout<<"False Positive Edges in Core: "<<FP<<endl;
-		
+
 
 
 		return Gc;
@@ -1439,7 +1439,7 @@ private:
 		}
 
 		std::cout << std::endl;
-		
+
 
 	}
 
@@ -1481,7 +1481,7 @@ private:
 			NodeList[FiberList[f].n1].incident++;
 		}
 	}
-	
+
 public:
 	vector<Fiber> FiberList;
 	vector<Node> NodeList;
@@ -1527,7 +1527,7 @@ public:
 	{
 		fiber_started = true;
 		num_points = 1;
-		
+
 		//create a start node and an end node
 		Node n;
 		n.p = point3D<float>(x, y, z);
@@ -1561,7 +1561,7 @@ public:
 	void ContinueFiber(float x, float y, float z)
 	{
  		if(!fiber_started)
-		{ 
+		{
 			StartFiber(x, y, z);
 			return;
 		}
@@ -1595,7 +1595,7 @@ public:
 		Node n = NodeList[node];
 		NodeList.push_back(n);
 
-		
+
 		f.n1 = NodeList.size()-1;
 		FiberList.push_back(f);
 
@@ -1609,7 +1609,7 @@ public:
 		//store the current node position in the fiber list
 		FiberList[f].pointList.push_back(NodeList[n].p);
 
-		//set the picked node as the fiber destination	
+		//set the picked node as the fiber destination
 		FiberList[f].n1 = node;
 
 		//remove the final node (now not used)
@@ -1656,7 +1656,7 @@ public:
 		int verts = NodeList.size();
 		//allocate enough space in an ANN array
 		ANNpointArray dataPts = annAllocPts(verts, 3);
-		
+
 		//insert the positions into the ANN list
 		for(int v=0; v<verts; v++)
 		{
@@ -1741,7 +1741,7 @@ public:
 				FiberList[f].n1 = NodeMap[node];
 
 				FiberNum[node]++;
-			}		
+			}
 		}
 
 		NodeList = newNodeList;
@@ -1848,7 +1848,7 @@ public:
 		}//end while
 		refreshFiberLengths();
 		refreshIncidence();
-		
+
 	}
 
 	void LoadOBJ(string filename)
@@ -2097,11 +2097,11 @@ public:
 					newPointList.push_back(p1);
 				}
 			}
-			FiberList[f].pointList = newPointList;			
+			FiberList[f].pointList = newPointList;
 		}
 	}
 	//network comparison
-	CoreGraphList CompareNetworks(rtsFiberNetwork* testNetwork, float sigmaG, float sigmaC)
+	CoreGraphList CompareNetworks(rtsFiberNetwork* testNetwork, float sigmaG, float sigmaC, float &gFPR, float &gFNR, float &cFPR, float &cFNR)
 	{
 		//create point clouds that densely sample each network
 		vector<geometryPoint> netPointList0, netPointList1;
@@ -2113,13 +2113,13 @@ public:
 		KD_ComputeEnvelopeDistance(this, &netPointList1, sigmaG);
 
 		//compute the geometry metric using the distance values for each vertex
-		float FPR, FNR;
-		FNR = GeometryMetric(this, sigmaG);
-		FPR = GeometryMetric(testNetwork, sigmaG);
+		//float FPR, FNR;
+		gFNR = GeometryMetric(this, sigmaG);
+		gFPR = GeometryMetric(testNetwork, sigmaG);
 
-		cout<<"GEOMETRY++++++++++++"<<endl;
+		/*cout<<"GEOMETRY++++++++++++"<<endl;
 		cout<<"False Positive Rate: "<<FPR<<endl;
-		cout<<"False Negative Rate: "<<FNR<<endl;
+		cout<<"False Negative Rate: "<<FNR<<endl;*/
 
 		CoreGraphList core;
 		core = NEW_ComputeTopology(testNetwork, sigmaC);
@@ -2137,17 +2137,17 @@ public:
 		float TPandFP = (float)FiberList.size();      // formerly P, actaully TPandFN
 		float TPandFN = (float)testNetwork->FiberList.size();   // actually TPandFP
 
-		FNR = (TPandFN - TP) / TPandFN;
-		FPR = (TPandFP - TP) / TPandFP;
+		cFNR = (TPandFN - TP) / TPandFN;
+		cFPR = (TPandFP - TP) / TPandFP;
 		//---------------------------------------------------
-		
-		cout<<"CONNECTIVITY++++++++"<<endl;
+
+		/*cout<<"CONNECTIVITY++++++++"<<endl;
 		cout<<"False Positive Rate: "<<FPR<<endl;
-		cout<<"False Negative Rate: "<<FNR<<endl;
+		cout<<"False Negative Rate: "<<FNR<<endl;*/
 		//PD.EndTimer(BOOST_TOPOLOGY);
 
 		//PD.PrintResults(cout);
-		cout<<endl<<endl;
+		//cout<<endl<<endl;
 		return core;
 	}
 
@@ -2255,8 +2255,8 @@ void rtsFiberNetwork::BD_ComputeL1Distance(vector<geometryPoint>* N0, vector<geo
 		bdTree->annkSearch(queryPt, 1, nearestIdx, nearestDist);
 		(*N0)[i].dist = sqrtf((float)nearestDist[0]);
 	}
-	delete bdTree;	
-	
+	delete bdTree;
+
 	annClose();
 }
 
@@ -2303,7 +2303,7 @@ bool rtsFiberNetwork::topDetectEdge(vector<topologyNode>* NodeList, vector<topol
 	{
 		if( ((*EdgeList)[*i].n0 == node0 && (*EdgeList)[*i].n1 == node1) ||
 			((*EdgeList)[*i].n0 == node1 && (*EdgeList)[*i].n1 == node0) )
-			return true;		
+			return true;
 	}
 	return false;
 }
@@ -2315,7 +2315,7 @@ bool rtsFiberNetwork::topDeleteEdge(vector<topologyNode>* NodeList, vector<topol
 	for(i = (*NodeList)[node0].connections.begin(); i!=(*NodeList)[node0].connections.end(); i++)
 	{
 		if( (*EdgeList)[*i].n0 == node1 || (*EdgeList)[*i].n1 == node1 )
-		{ 
+		{
 			//delete the edge
 
 			edge_id = *i;
@@ -2414,7 +2414,7 @@ bool rtsFiberNetwork::topMergeNode(vector<topologyNode>* NodeList, vector<topolo
 			(*NodeList)[merge_to].connections.erase(i);
 			break;
 		}
-	
+
 	//update all of the edges connected to 'node'
 	for(i = (*NodeList)[node].connections.begin(); i!=(*NodeList)[node].connections.end(); i++)
 	{
@@ -2452,9 +2452,9 @@ int rtsFiberNetwork::topCollapse(vector<topologyNode>* NodeList, vector<topology
 		//if this node is the end of a barb, mark it as a topology change
 		num_connections = (*NodeList)[n].connections.size();
 		node_merged = topMergeNode(NodeList, EdgeList, n);
-		if(num_connections == 1 && node_merged == true)		
+		if(num_connections == 1 && node_merged == true)
 			topology_changes++;
-		
+
 	}
 
 	return topology_changes;
@@ -2571,7 +2571,7 @@ TopologyGraph rtsFiberNetwork::BOOST_RemapGraph(TopologyGraph& G, rtsFiberNetwor
 		v1 = target(*ei, G);
 		idx0 = get(vertex_color_t(), G, v0);
 		idx1 = get(vertex_color_t(), G, v1);
-		add_edge(idx0, idx1, result);		
+		add_edge(idx0, idx1, result);
 	}
 	return result;
 
