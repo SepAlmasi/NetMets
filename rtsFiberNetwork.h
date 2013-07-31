@@ -1751,8 +1751,8 @@ public:
 		//open the file
 		ifstream infile;
 		infile.open(filename.c_str());
-		if(!infile.is_open())
-			return;
+		if(!infile)
+			exit(1);
 
 		//variables to read
 		int id, type, parent;
