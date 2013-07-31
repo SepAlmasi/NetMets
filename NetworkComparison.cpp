@@ -175,28 +175,22 @@ void InitializeOpenGL()
 	Edge_ErrorShader.PrintLog();
 	Edge_ErrorShader.Link();
 	Edge_ErrorShader.PrintLog();
-	//Edge_ErrorShader.PrintUniforms();
-	//Edge_ErrorShader.AttachGlobalUniform("L0_pos", L0_pos);
 	Edge_ErrorShader.AttachGlobalUniform("L1_pos", L1_pos);
 	Edge_ErrorShader.AttachTextureMap("colorMap", texColorMap);
-	//Edge_ErrorShader.UpdateGlobalUniforms();
 
 
 	Node_ErrorShader.AttachShader(GL_VERTEX_SHADER, SmoothShaderVertexFilename.c_str());
 	Node_ErrorShader.AttachShader(GL_FRAGMENT_SHADER, ErrorMapFragmentFilename.c_str());
 	Node_ErrorShader.Compile();
-	//cout<<"Node Error Shader Log-------------------------"<<endl;
 	Node_ErrorShader.PrintLog();
 	Node_ErrorShader.Link();
 	Node_ErrorShader.PrintLog();
-	//Node_ErrorShader.AttachGlobalUniform("L0_pos", L0_pos);
 	Node_ErrorShader.AttachGlobalUniform("L1_pos", L1_pos);
 	Node_ErrorShader.AttachTextureMap("colorMap", texColorMap);
 
 	Smooth_Shader.AttachShader(GL_VERTEX_SHADER, SmoothShaderVertexFilename.c_str());
 	Smooth_Shader.AttachShader(GL_FRAGMENT_SHADER, SmoothShaderFragmentFilename.c_str());
 	Smooth_Shader.Compile();
-	//cout<<"Color Shader Log-------------------------"<<endl;
 	Smooth_Shader.PrintLog();
 	Smooth_Shader.Link();
 	Smooth_Shader.PrintLog();
@@ -243,9 +237,6 @@ void ComputeNetMets()
 #include <errno.h>
 int main(int argc, char* argv[])
 {
-    char* test = "Hello world!/n";
-    strlen(test);
-
     //Create an AnyOption object
     AnyOption* opt = new AnyOption();
     opt->addUsage( "" );
@@ -308,28 +299,9 @@ int main(int argc, char* argv[])
 	else
 	{
         gold_filename = sArgs[0];
-		//cout<<"Gold: "<<gold_filename<<endl;
 		test_filename = sArgs[1];
-		//cout<<"Test: "<<test_filename<<endl;
 	}
-	/*else if(nArgs == 3)
-	{
-		gold_filename = sArgs[1];
-		cout<<"Gold: "<<gold_filename<<endl;
-		test_filename = sArgs[2];
-		cout<<"Test: "<<test_filename<<endl;
-		cout<<"Please enter a sigma value: ";
-		cin>>sigmaG;
-		sigmaC = sigmaG;
-	}
-	else if(nArgs == 4)
-	{
-		gold_filename = sArgs[1];
-		cout<<"Gold: "<<gold_filename<<endl;
-		test_filename = sArgs[2];
-		cout<<"Test: "<<test_filename<<endl;
-		sigmaG = sigmaC = atof(sArgs[3]);
-	}*/
+
 
 	//load the network files
 	testNetwork = new rtsFiberNetwork();

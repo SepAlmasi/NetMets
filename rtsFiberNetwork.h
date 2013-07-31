@@ -2117,19 +2117,8 @@ public:
 		gFNR = GeometryMetric(this, sigmaG);
 		gFPR = GeometryMetric(testNetwork, sigmaG);
 
-		/*cout<<"GEOMETRY++++++++++++"<<endl;
-		cout<<"False Positive Rate: "<<FPR<<endl;
-		cout<<"False Negative Rate: "<<FNR<<endl;*/
-
 		CoreGraphList core;
 		core = NEW_ComputeTopology(testNetwork, sigmaC);
-
-		//compute the metric
-		/*float TP = core.size();
-		float P = FiberList.size();
-		float TPandFN = testNetwork->FiberList.size();
-		FNR = (TPandFN - TP)/TPandFN;
-		FPR = (P-TP)/P;*/
 
 		//Changes made by James Burck (Thanks James!)--------
 		float TP = (float)core.size();
@@ -2141,13 +2130,6 @@ public:
 		cFPR = (TPandFP - TP) / TPandFP;
 		//---------------------------------------------------
 
-		/*cout<<"CONNECTIVITY++++++++"<<endl;
-		cout<<"False Positive Rate: "<<FPR<<endl;
-		cout<<"False Negative Rate: "<<FNR<<endl;*/
-		//PD.EndTimer(BOOST_TOPOLOGY);
-
-		//PD.PrintResults(cout);
-		//cout<<endl<<endl;
 		return core;
 	}
 
